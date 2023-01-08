@@ -1,5 +1,7 @@
 <template>
     <div class="app-container">
+        讲师添加
+
         <el-form label-width="120px">
             <el-form-item label="讲师名称">
                 <el-input v-model="teacher.name" />
@@ -19,9 +21,26 @@
             <el-form-item label="讲师简介">
                 <el-input v-model="teacher.intro" :rows="10" type="textarea" />
             </el-form-item>
-
-            <!-- 讲师头像：TODO -->
-
+            <!-- 讲师头像 -->
+            <el-form-item label="讲师头像">
+                <!-- 头衔缩略图 -->
+                <pan-thumb :image="teacher.avatar" />
+                <!-- 文件上传按钮 -->
+                <el-button type="primary" icon="el-icon-upload" @click="imagecropperShow = true">更换头像
+                </el-button>
+                <!--
+      v-show：是否显示上传组件
+      :key：类似于id，如果一个页面多个图片上传控件，可以做区分
+      :url：后台上传的url地址
+      @close：关闭上传组件
+      @crop-upload-success：上传成功后的回调 
+       这里field的值必须和后端接口MultipartFile file的形参名相同
+        <input type="file" name="file"/>
+      -->
+                <image-cropper v-show="imagecropperShow" :width="300" :height="300" :key="imagecropperKey"
+                    :url="BASE_API + '/eduoss/fileoss/upload'" field="file" @close="close"
+                    @crop-upload-success="cropSuccess" />
+            </el-form-item>
             <el-form-item>
                 <el-button :disabled="saveBtnDisabled" type="primary" @click="saveOrUpdate">保存</el-button>
             </el-form-item>
@@ -32,7 +51,11 @@
 
 <script>
 import teacherApi from "@/api/edu/teacher";
+
+import ImageCropper from "@/components/ImageCropper";
+import PanThumb from "@/components/PanThumb";
 export default {
+    components: { ImageCropper, PanThumb },
     data() {
         return {
             teacher: {
@@ -41,9 +64,14 @@ export default {
                 level: 1,
                 career: "",
                 intro: "",
-                avatar: "",
+                avatar:
+                    "https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif",
             },
-            saveBtnDisabled: false,
+            //上传弹框组件是否显示
+            imagecropperShow: false,
+            imagecropperKey: 0, //上传组件key值
+            BASE_API: process.env.BASE_API, //获取dev.env.js里面地址
+            saveBtnDisabled: false, // 保存按钮是否禁用,
         };
     },
     watch: {
@@ -54,7 +82,6 @@ export default {
     created() {
         this.init();
     },
-
     methods: {
         init() {
             //判断路径有id值,做修改
@@ -83,26 +110,41 @@ export default {
             teacherApi
                 .addTeacher(this.teacher)
                 .then((response) => {
+                    //提示信息
                     this.$message({
                         type: "success",
                         message: "添加成功!",
                     });
+                    //回到列表页面 ，路由跳转
                     this.$router.push({ path: "/teacher/list" });
                 })
                 .catch((err) => { });
         },
-
         updateTeacherInfo() {
             teacherApi
                 .updateTeacher(this.teacher)
                 .then((response) => {
+                    //提示信息
                     this.$message({
                         type: "success",
                         message: "修改成功!",
                     });
+
+                    //回到列表页面 ，路由跳转
                     this.$router.push({ path: "/teacher/list" });
                 })
                 .catch((err) => { });
+        },
+        close() {
+            this.imagecropperShow = false;
+            // 上传失败后，重新打开上传组件时初始化组件，否则显示上一次的上传结果
+            this.imagecropperKey = this.imagecropperKey + 1;
+        },
+        cropSuccess(data) {
+            this.imagecropperShow = false;
+            //上传之后接口返回图片地址
+            this.teacher.avatar = data.url;
+            this.imagecropperKey = this.imagecropperKey + 1;
         },
     },
 };
