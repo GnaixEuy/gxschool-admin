@@ -29,7 +29,6 @@ export const constantRouterMap = [
     hidden: true
   },
   { path: '/404', component: () => import('@/views/404'), hidden: true },
-
   {
     path: '/',
     component: Layout,
@@ -43,7 +42,6 @@ export const constantRouterMap = [
       }
     ]
   },
-
   {
     path: '/example',
     component: Layout,
@@ -65,7 +63,6 @@ export const constantRouterMap = [
       }
     ]
   },
-
   {
     path: '/form',
     component: Layout,
@@ -78,7 +75,6 @@ export const constantRouterMap = [
       }
     ]
   },
-
   {
     path: '/nested',
     component: Layout,
@@ -136,7 +132,6 @@ export const constantRouterMap = [
       }
     ]
   },
-
   {
     path: 'external-link',
     component: Layout,
@@ -147,7 +142,6 @@ export const constantRouterMap = [
       }
     ]
   },
-
   { path: '*', redirect: '/404', hidden: true },
   {
     path: '/teacher',

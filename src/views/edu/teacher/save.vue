@@ -38,7 +38,7 @@
         <input type="file" name="file"/>
       -->
                 <image-cropper v-show="imagecropperShow" :width="300" :height="300" :key="imagecropperKey"
-                    :url="BASE_API + '/eduoss/fileoss/upload'" field="file" @close="close"
+                    :url="BASE_API + '/eduoss/fileoss'" field="file" @close="close"
                     @crop-upload-success="cropSuccess" />
             </el-form-item>
             <el-form-item>

@@ -3,7 +3,7 @@ import request from '@/utils/request'
 export default {
   getTeacherListPage(current, limit, teacherQuery) {
     return request({
-      url: `/eduservice/teacher/pageTeacherCondition/${current}/${limit}`, // 这里用的是es6的``不是单引号
+      url: `/eduservice/teacher/pageTeacherCondition/${current}/${limit}`,
       method: 'post',
       data: teacherQuery
     })
